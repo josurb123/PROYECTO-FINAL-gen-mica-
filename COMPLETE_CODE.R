@@ -307,56 +307,69 @@ plot(gh_obese_thr,
 #tambien lo saque de un tutorial, dejo la pagina a continuacion por si la quieren
 #revisar, super funcional y para citar la pagina tambien.
 
+#Eliminar nodos aislados (bacterias sin conexiones)
 #Lo mas facil es hacer un ciclo que elimine los nodos y que vaya recorriendo cada objeto
-nodos_so<- list(
-  m_todos_thr,
-  mh_lean_thr,
-  mh_obese_thr,
-  mi_lean_thr,
-  mi_obese_thr,
-  m_danish_thr,
-  m_spanish_thr,
-  m_ET1_thr,
-  m_ET2_thr,
-  m_ET3_thr
+
+# ELIMINAR NODOS AISLADOS
+
+# lista de redes thresholded
+redes_thr <- list(
+  g_todos_thr,
+  gh_lean_thr,
+  gh_obese_thr,
+  gi_lean_thr,
+  gi_obese_thr,
+  g_danish_thr,
+  g_spanish_thr,
+  g_ET1_thr,
+  g_ET2_thr,
+  g_ET3_thr
 )
 
-titulos<- list(
-  "TODOS",
-  "Health & Lean",
-  "Health & Obese",
-  "IBD & Lean",
-  "IBD & Obese",
-  "Danish",
-  "Spanish",
+# nombres de las redes
+nombres_redes <- c(
+  "todos",
+  "h_lean",
+  "h_obese",
+  "i_lean",
+  "i_obese",
+  "danish",
+  "spanish",
   "ET1",
   "ET2",
   "ET3"
 )
 
-red_filtrada<- list()
+# lista vacía para guardar redes filtradas
+redes_filtradas <- list()
 
-for (i in 1:10){
-  #genero una variable temporal para que no se reescriba en los datos originales
-  #
-  v_temporal<- nodos_so[[i]]
-  g_original<- graph_from_adjacency_matrix(v_temporal, mode = "undirected",
-                                           weighted = TRUE)
-  g_filtrada<- delete.vertices(g_original, degree(g_original)== 0)
+# ciclo para eliminar nodos aislados
+for(i in 1:10){
+  g <- redes_thr[[i]]
+  # eliminar nodos con degree = 0
+  g_filtrado <- delete_vertices(g,degree(g)==0)
+   
+  # guardar red filtrada
+  redes_filtradas[[nombres_redes[i]]] <- g_filtrado
   
-  #si solo corro el ciclo, no se van a guardar mis graficas, por eso, quiero que
-  #vaya guardando con el titulo 
+  # imprimir resumen
+  cat("\n")
+  cat("Red:", nombres_redes[i], "\n")
+  cat("Nodos:", vcount(g_filtrado), "\n")
+  cat("Edges:", ecount(g_filtrado), "\n")
 }
 
+#Al aplicar el filtrado, todas la redes conservaron los 154 nodos originales,
+#o sea que despues del threshold ningina especie quedó aislada. 
 
 
 
 
+##Continuar con metricas globales
 
 
 
 
-delete.vertices()
 
 
 
