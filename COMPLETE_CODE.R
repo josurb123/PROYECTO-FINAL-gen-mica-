@@ -368,68 +368,76 @@ for(i in 1:10){
 
 ##Nota: Continuar con metricas globales
 
-#CALCULAR METRICAS GLOBALES
+library(igraph)
 
-#---------------------------------------------------------------------
 # CALCULAR METRICAS GLOBALES
 
 # crear dataframe vacío para guardar resultados
 metricas_globales <- data.frame()
 
-# Calcular metricas para TODAS las redes filtradas
-for(i in 1:10){#---------------------------------------------------------------------
-  # CALCULAR METRICAS GLOBALES
-  
-# crear dataframe vacío para guardar resultados
-metricas_globales <- data.frame()
- 
- # recorrer todas las redes filtradas
-  for(i in 1:10){
-   # seleccionar red
-    g <- redes_filtradas[[nombres_redes[i]]]
-     # detectar comunidades usando Louvain
-    comunidades <- cluster_louvain(g)
-     # guardar métricas
-    temp <- data.frame(
-       Red = nombres_redes[i],
-      Nodos = vcount(g),
-      Edges = ecount(g),
-      Degree_promedio = mean(degree(g)),
-      Densidad = edge_density(g),
-      Clustering = transitivity(g, type = "global"),
-      Path_length = mean_distance(g),
-      Modularidad = modularity(comunidades)
-       )
-    
-    # agregar resultados al dataframe
-    metricas_globales <- rbind(metricas_globales, temp)
-  }
-  
-  # mostrar tabla final
-  metricas_globales
+# Ciclo para calcular metricas en todas las redes filtradas
+for(i in 1:10){
+  # seleccionar red
   g <- redes_filtradas[[nombres_redes[i]]]
-  
-  # detectar comunidades usando Louvain
+   # detectar comunidades usando Louvain
   comunidades <- cluster_louvain(g)
-  
   # guardar métricas
   temp <- data.frame(
-  Red = nombres_redes[i],
-  Nodos = vcount(g),
-  Edges = ecount(g),
-  Degree_promedio = mean(degree(g)),
-  Densidad = edge_density(g),
-  Clustering = transitivity(g, type = "global"),
-  Path_length = mean_distance(g),
-  Modularidad = modularity(comunidades)
+    Red = nombres_redes[i],
+    Nodos = vcount(g),
+    Edges = ecount(g),
+    Degree_promedio = mean(degree(g)),
+    Densidad = edge_density(g),
+    Clustering = transitivity(g, type = "global"),
+    Path_length = mean_distance(g),
+    Modularidad = modularity(comunidades)
   )
   
-  # agregar resultados al dataframe
+#agregar resultados al dataframe
   metricas_globales <- rbind(metricas_globales, temp)
 }
 
-# mostrar tabla final
+# mostrar tabla final de todas las metricas paraa cada red filtrada 
 metricas_globales
+
+
+
+###Analisis biológico 
+## Hay que determinar diferentes medidas de centralidad 
+
+#Funcion para determinar medidad de centralidad 
+
+calcular_centralidades <- function(g){
+  data.frame(
+   Bacteria= V(g)$name,
+   Degree= degree(g),
+   Strength= strength(g),
+   Betweennes= betweenness(g),
+   Eigen_vector = eigen_centrality(g)$vector
+   
+  )
+}
+
+#Probar con una red (verificar que funciona)
+
+
+library(igraph)
+calcular_centralidades(redes_filtradas[["todos"]])
+
+#Hice una funcion para las centralidad 
+##Funciona, pero pueden hacer un ciclo for para que corran TODAS las redes y no 
+#hacerlo 1 por 1 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
