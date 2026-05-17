@@ -347,7 +347,10 @@ redes_filtradas <- list()
 for(i in 1:10){
   g <- redes_thr[[i]]
   # eliminar nodos con degree = 0
-  g_filtrado <- delete_vertices(g,degree(g)==0)
+  g_filtrado <- delete_vertices(
+    g,
+    V(g)[degree(g) == 0]
+  )
    
   # guardar red filtrada
   redes_filtradas[[nombres_redes[i]]] <- g_filtrado
@@ -363,10 +366,70 @@ for(i in 1:10){
 #o sea que despues del threshold ningina especie quedó aislada. 
 
 
+##Nota: Continuar con metricas globales
 
+#CALCULAR METRICAS GLOBALES
 
-##Continuar con metricas globales
+#---------------------------------------------------------------------
+# CALCULAR METRICAS GLOBALES
 
+# crear dataframe vacío para guardar resultados
+metricas_globales <- data.frame()
+
+# Calcular metricas para TODAS las redes filtradas
+for(i in 1:10){#---------------------------------------------------------------------
+  # CALCULAR METRICAS GLOBALES
+  
+# crear dataframe vacío para guardar resultados
+metricas_globales <- data.frame()
+ 
+ # recorrer todas las redes filtradas
+  for(i in 1:10){
+   # seleccionar red
+    g <- redes_filtradas[[nombres_redes[i]]]
+     # detectar comunidades usando Louvain
+    comunidades <- cluster_louvain(g)
+     # guardar métricas
+    temp <- data.frame(
+       Red = nombres_redes[i],
+      Nodos = vcount(g),
+      Edges = ecount(g),
+      Degree_promedio = mean(degree(g)),
+      Densidad = edge_density(g),
+      Clustering = transitivity(g, type = "global"),
+      Path_length = mean_distance(g),
+      Modularidad = modularity(comunidades)
+       )
+    
+    # agregar resultados al dataframe
+    metricas_globales <- rbind(metricas_globales, temp)
+  }
+  
+  # mostrar tabla final
+  metricas_globales
+  g <- redes_filtradas[[nombres_redes[i]]]
+  
+  # detectar comunidades usando Louvain
+  comunidades <- cluster_louvain(g)
+  
+  # guardar métricas
+  temp <- data.frame(
+  Red = nombres_redes[i],
+  Nodos = vcount(g),
+  Edges = ecount(g),
+  Degree_promedio = mean(degree(g)),
+  Densidad = edge_density(g),
+  Clustering = transitivity(g, type = "global"),
+  Path_length = mean_distance(g),
+  Modularidad = modularity(comunidades)
+  )
+  
+  # agregar resultados al dataframe
+  metricas_globales <- rbind(metricas_globales, temp)
+}
+
+# mostrar tabla final
+metricas_globales
 
 
 
