@@ -264,7 +264,7 @@ t_ET3 <- mean(vs_ET3) + sd(vs_ET3)
 m_ET3_thr <- m_ET3
 m_ET3_thr[m_ET3_thr < t_ET3] <- 0
 
-#después volver a hacer los grafos de con igraph pero ahora con las matrices con threshold
+#Después volver a hacer los grafos de con igraph pero ahora con las matrices con threshold
 
 g_todos_thr   <- graph_from_adjacency_matrix(m_todos_thr, mode = "undirected",
                                              weighted = TRUE)
@@ -421,43 +421,118 @@ calcular_centralidades <- function(g){
 #Probar con una red (verificar que funciona)
 
 
-library(igraph)
-calcular_centralidades(redes_filtradas[["todos"]])
+###se hizo un objeto por cada red filtrada en la cual abarque los las distintas metricas de diversidad
+cen_todos<- calcular_centralidades(redes_filtradas[["todos"]])
+cen_hl<-calcular_centralidades(redes_filtradas[["h_lean"]])
+cen_ho<-calcular_centralidades(redes_filtradas[["h_obese"]])
+cen_il<-calcular_centralidades(redes_filtradas[["i_lean"]])
+cen_io<-calcular_centralidades(redes_filtradas[["i_obese"]])
+cen_danish<-calcular_centralidades(redes_filtradas[["danish"]])
+cen_spanish<-calcular_centralidades(redes_filtradas[["spanish"]])
+cen_ET1<-calcular_centralidades(redes_filtradas[["ET1"]])
+cen_ET2<-calcular_centralidades(redes_filtradas[["ET2"]])
+cen_ET3<-calcular_centralidades(redes_filtradas[["ET3"]])
 
-#Hice una funcion para las centralidad 
-##Funciona, pero pueden hacer un ciclo for para que corran TODAS las redes y no 
-#hacerlo 1 por 1 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
 
 #https://colab.research.google.com/github/prbocca/na101_master/blob/master/homework_00_a_graphs/public_homework_00_a_graphs.ipynb
 
 
-#---------------------------------------------------------------------
-#para despuescalcular las metricas globales (# nodos, # edges, degree, distancias, coeficiente de clustering, modularidad)
-#después calcular centralidades
 
+###obtener los 10 nodos hub dependiendo distintas metricas
 
+###nodos hub por grado, fuerza, intermediación, valor propio
+top_degree_todos<- cen_todos[order(-cen_todos$Degree), ]
+hub_d_todos<-head(top_degree_todos, 10)
+top_strength_todos<- cen_todos[order(-cen_todos$Strength), ]
+hub_s_todos<-head(top_strength_todos, 10)
+top_bet_todos<- cen_todos[order(-cen_todos$Betweennes), ]
+hub_b_todos<-head(top_bet_todos, 10)
+top_eigv_todos<- cen_todos[order(-cen_todos$Eigen_vector), ]
+hub_e_todos<-head(top_eigv_todos, 10)
 
+top_degree_hl<- cen_hl[order(-cen_hl$Degree), ]
+hub_d_hl<-head(top_degree_hl, 10)
+top_strength_hl<- cen_hl[order(-cen_hl$Strength), ]
+hub_s_hl<-head(top_strength_hl, 10)
+top_bet_hl <- cen_hl[order(-cen_hl$Betweennes), ]
+hub_b_hl<-head(top_bet_hl, 10)
+top_eigv_hl<- cen_hl[order(-cen_hl$Eigen_vector), ]
+hub_e_hl<-head(top_eigv_hl, 10)
 
+top_degree_ho<- cen_ho[order(-cen_ho$Degree), ]
+hub_d_ho<-head(top_degree_ho, 10)
+top_strength_ho<- cen_ho[order(-cen_ho$Strength), ]
+hub_s_ho<-head(top_strength_ho, 10)
+top_bet_ho <- cen_ho[order(-cen_ho$Betweennes), ]
+hub_b_ho<-head(top_bet_ho, 10)
+top_eigv_ho<- cen_ho[order(-cen_ho$Eigen_vector), ]
+hub_e_ho<-head(top_eigv_ho, 10)
 
+top_degree_il<- cen_il[order(-cen_il$Degree), ]
+hub_d_il<-head(top_degree_il, 10)
+top_strength_il<- cen_il[order(-cen_il$Strength), ]
+hub_s_il<-head(top_strength_il, 10)
+top_bet_il <- cen_il[order(-cen_il$Betweennes), ]
+hub_b_il<-head(top_bet_il, 10)
+top_eigv_il<- cen_il[order(-cen_il$Eigen_vector), ]
+hub_e_il<-head(top_eigv_il, 10)
 
+top_degree_io<- cen_io[order(-cen_io$Degree), ]
+hub_d_io<-head(top_degree_io, 10)
+top_strength_io<- cen_io[order(-cen_io$Strength), ]
+hub_s_io<-head(top_strength_io, 10)
+top_bet_io <- cen_io[order(-cen_io$Betweennes), ]
+hub_b_io<-head(top_bet_io, 10)
+top_eigv_io<- cen_io[order(-cen_io$Eigen_vector), ]
+hub_e_io<-head(top_eigv_io, 10)
 
+top_degree_danish<- cen_danish[order(-cen_danish$Degree), ]
+hub_d_danish<-head(top_degree_danish, 10)
+top_strength_danish<- cen_danish[order(-cen_danish$Strength), ]
+hub_s_danish<-head(top_strength_danish, 10)
+top_bet_danish <- cen_danish[order(-cen_danish$Betweennes), ]
+hub_b_danish<-head(top_bet_danish, 10)
+top_eigv_danish<- cen_danish[order(-cen_danish$Eigen_vector), ]
+hub_e_danish<-head(top_eigv_danish, 10)
 
+top_degree_spanish<- cen_spanish[order(-cen_spanish$Degree), ]
+hub_d_spanish<-head(top_degree_spanish, 10)
+top_strength_spanish<- cen_spanish[order(-cen_spanish$Strength), ]
+hub_s_spanish<-head(top_strength_spanish, 10)
+top_bet_spanish <- cen_spanish[order(-cen_spanish$Betweennes), ]
+hub_b_spanish<-head(top_bet_spanish, 10)
+top_eigv_spanish<- cen_spanish[order(-cen_spanish$Eigen_vector), ]
+hub_e_spanish<-head(top_eigv_spanish, 10)
 
+top_degree_ET1<- cen_ET1[order(-cen_ET1$Degree), ]
+hub_d_ET1<-head(top_degree_ET1, 10)
+top_strength_ET1<- cen_ET1[order(-cen_ET1$Strength), ]
+hub_s_ET1<-head(top_strength_ET1, 10)
+top_bet_ET1 <- cen_ET1[order(-cen_ET1$Betweennes), ]
+hub_b_ET1<-head(top_bet_ET1, 10)
+top_eigv_ET1<- cen_ET1[order(-cen_ET1$Eigen_vector), ]
+hub_e_ET1<-head(top_eigv_ET1, 10)
 
+top_degree_ET2<- cen_ET2[order(-cen_ET2$Degree), ]
+hub_d_ET2<-head(top_degree_ET2, 10)
+top_strength_ET2<- cen_ET2[order(-cen_ET2$Strength), ]
+hub_s_ET2<-head(top_strength_ET2, 10)
+top_bet_ET2 <- cen_ET2[order(-cen_ET2$Betweennes), ]
+hub_b_ET2<-head(top_bet_ET2, 10)
+top_eigv_ET2<- cen_ET2[order(-cen_ET2$Eigen_vector), ]
+hub_e_ET2<-head(top_eigv_ET2, 10)
 
+top_degree_ET3<- cen_ET3[order(-cen_ET3$Degree), ]
+hub_d_ET3<-head(top_degree_ET3, 10)
+top_strength_ET3<- cen_ET3[order(-cen_ET3$Strength), ]
+hub_s_ET3<-head(top_strength_ET3, 10)
+top_bet_ET3 <- cen_ET3[order(-cen_ET3$Betweennes), ]
+hub_b_ET3<-head(top_bet_ET3, 10)
+top_eigv_ET3<- cen_ET3[order(-cen_ET3$Eigen_vector), ]
+hub_e_ET3<-head(top_eigv_ET3, 10)
+
+#despues de sacar los genes hub tomando en cuenta las distintas medidas de centralidad hay que comparar entre redes las diferencias que se ven
+#intentando encontrar hubs consevados, hubs perdidos y hubs nuevos (que dependiendo cuales sean las condiciones puede asociarse a inflamación)
+#pueden comparar haciendo tablas o heatmaps
