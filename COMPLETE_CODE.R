@@ -421,6 +421,29 @@ calcular_centralidades <- function(g){
 #Probar con una red (verificar que funciona)
 
 
+##Hacer un cilo for para todas
+
+centralidades_redes <- list()
+
+for(i in 1:10){
+  nombre <- nombres_redes[i]
+  g <- redes_filtradas[[nombre]]
+  centralidades <- data.frame(
+  Bacteria = V(g)$name,
+  Degree = degree(g),
+  Strength = strength(g),
+  Betweenness = betweenness(g),
+  Eigenvector = eigen_centrality(g)$vector
+    
+  )
+  centralidades_redes[[nombre]] <- centralidades
+}
+
+
+
+
+
+
 ###se hizo un objeto por cada red filtrada en la cual abarque los las distintas metricas de diversidad
 cen_todos<- calcular_centralidades(redes_filtradas[["todos"]])
 cen_hl<-calcular_centralidades(redes_filtradas[["h_lean"]])
