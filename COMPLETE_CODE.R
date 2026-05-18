@@ -165,7 +165,7 @@ gi_lean<- graph_from_adjacency_matrix(
   diag = FALSE
 )
 
-gh_obese<- graph_from_adjacency_matrix(
+gi_obese<- graph_from_adjacency_matrix(
   mi_obese,
   mode = "undirected",
   weighted = TRUE,
@@ -433,11 +433,8 @@ cen_ET1<-calcular_centralidades(redes_filtradas[["ET1"]])
 cen_ET2<-calcular_centralidades(redes_filtradas[["ET2"]])
 cen_ET3<-calcular_centralidades(redes_filtradas[["ET3"]])
 
- 
-
 
 #https://colab.research.google.com/github/prbocca/na101_master/blob/master/homework_00_a_graphs/public_homework_00_a_graphs.ipynb
-
 
 
 ###obtener los 10 nodos hub dependiendo distintas metricas
@@ -536,3 +533,104 @@ hub_e_ET3<-head(top_eigv_ET3, 10)
 #despues de sacar los genes hub tomando en cuenta las distintas medidas de centralidad hay que comparar entre redes las diferencias que se ven
 #intentando encontrar hubs consevados, hubs perdidos y hubs nuevos (que dependiendo cuales sean las condiciones puede asociarse a inflamación)
 #pueden comparar haciendo tablas o heatmaps
+
+#Para poder trabajar con los hubs, trabajare solo los hubs por grado en
+#las bacterias ya que vi que arriba ordenaron segun el valor del degree, asi que por
+#eso quiero saber los nombres de esas bacterias que sirven para las graficas
+#de representacion de datos, basicamente responder:
+
+##¿las bacterias presentes en individuos sanos y delgados tambien estan presentes
+##en pacientes enfermos y delgados?
+
+#GRUPO 1_ HEALTH & LEAN, IDB & LEAN. 
+grupo_lean_sanos<- hub_d_hl$Bacteria
+grupo_lean_enfermos<- hub_d_il$Bacteria
+
+#GRUPO 1_conservados: conservados en sanos y enfermos
+print(grupo_lean_sanos[grupo_lean_sanos %in% grupo_lean_enfermos])
+
+#GRUPO 1_perdidos: No encontrados en sanos
+print(grupo_lean_sanos[!grupo_lean_sanos %in% grupo_lean_enfermos])
+
+#GRUPO 1_nuevos: Emergentes 
+print(grupo_lean_enfermos[!grupo_lean_enfermos %in% grupo_lean_sanos])
+
+-----------------------------------------
+#GRUPO 2_ HEALTH & OBESE, IDB & OBESE. 
+grupo_obese_sanos<- hub_d_ho$Bacteria
+grupo_obese_enfermos<- hub_d_io$Bacteria
+
+#GRUPO 2_CONSERVADOS
+print(grupo_obese_sanos[grupo_obese_sanos %in% grupo_obese_enfermos])
+#[1] "Bacteroides_sp_9_1_42FAA"           "Dorea_formicigenerans_ATCC_27755"  
+#[3] "Clostridiales_sp_SS3_4"             "Faecalibacterium_prausnitzii_SL3_3"
+
+#GRUPO 2_PERDIDOS
+print(grupo_obese_sanos[!grupo_obese_sanos %in% grupo_obese_enfermos])
+#"Collinsella_aerofaciens_ATCC_25986" "Eubacterium_rectale_M104_1"        
+#[3] "Bacteroides_sp_4_3_47FAA"           "Bacteroides_sp_D1"                 
+#[5] "Bacteroides_vulgatus_ATCC_8482"     "Bacteroides_xylanisolvens_XB1A"  
+
+#GRUPO 2_EMERGENTES
+print(grupo_obese_enfermos[!grupo_obese_enfermos %in% grupo_obese_sanos])
+#[1] "Clostridium_sp_SS2_1"                  "Bacteroides_thetaiotaomicron_VPI_5482"
+#[3] "Ruminococcus_torques_L2_14"            "Bacteroides_sp_2_1_7"                 
+#[5] "Roseburia_intestinalis_M50_1"          "Coprococcus_comes_ATCC_27758"
+
+------------------------------------------
+  
+#GRUPO 3_POBLACIONES
+grupo_danish<- hub_d_danish$Bacteria
+grupo_spanish<- hub_d_spanish$Bacteria
+
+#GRUPO 3_conservados: conservados en ambas poblaciones
+print(grupo_danish[grupo_danish %in% grupo_spanish])
+#[1] "Roseburia_intestinalis_M50_1"         "Faecalibacterium_prausnitzii_SL3_3"  
+#[3] "Bacteroides_sp_9_1_42FAA"             "Bacteroides_vulgatus_ATCC_8482"      
+#[5] "Bacteroides_sp_2_1_7"                 "Bacteroides_sp_4_3_47FAA"            
+#[7] "Parabacteroides_distasonis_ATCC_8503"
+
+#GRUPO 3_nuevos: Emergentes 
+print(grupo_danish[!grupo_danish %in% grupo_spanish])
+#[1] "Eubacterium_rectale_M104_1" "Ruminococcus_sp_SR1_5"   "Ruminococcus_torques_L2_14"
+
+-------------------------------------------
+#GRUPO 4_ ETNI
+grupo_ET1<- hub_d_ET1$Bacteria
+grupo_ET2<- hub_d_ET2$Bacteria
+grupo_ET3<- hub_d_ET3$Bacteria
+
+##HAGAN ESTE ULTIMO CON 3, YO CREO QUE ESTARIA BIEN CUALES ESTAN PRESENTES EN LOS 3
+#Y CYUALES SON EXCLUSIVOS DE LA ETNIA
+
+#HEATMAPS
+bacterias<- unique(c(grupo_lean_sanos, grupo_lean_enfermos, grupo_obese_sanos, grupo_obese_enfermos))
+colhl<- as.numeric(bacterias %in% grupo_lean_sanos)
+colil<- as.numeric(bacterias %in% grupo_lean_enfermos)
+colho<- as.numeric(bacterias %in% grupo_obese_sanos)
+colio<- as.numeric(bacterias %in% grupo_obese_enfermos)
+
+matriz_sanos_enfermos<- cbind(colhl,
+                              colil,
+                              colho,
+                              colio)
+
+rownames(matriz_sanos_enfermos)<- bacterias
+
+colnames(matriz_sanos_enfermos)<- c("delgado-sano", "delgado-enfermo", 
+                                    "obeso-sano", "obeso-enfermo")
+
+##VISUALIZACION DE LA MATRIZ, como ven, hay valores 0-1 que puede leer el heatmap
+matriz_sanos_enfermos
+
+heatmap(matriz_sanos_enfermos,
+        labRow = 0.2,
+        cexRow = 0.2,
+        main = "Bacterias presentes en pacientes sanos o enfermos",
+        col = c("red", "blue"))
+
+#MEJOREN EL HEATMAP Y COLOQUEN VALORES, Y TAMAÑOS MEJOR VISTOS
+
+help("heatmap")
+
+
