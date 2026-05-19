@@ -655,7 +655,7 @@ matriz_sanos_enfermos
 install.packages("pheatmap")
 library(pheatmap)
 
-pheatmap(
+eatmap(
   matriz_sanos_enfermos,
   color = c("green", "orange"),
   cluster_rows = FALSE,
