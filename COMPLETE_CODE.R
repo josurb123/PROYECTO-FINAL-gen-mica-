@@ -559,7 +559,7 @@ hub_e_ET3<-head(top_eigv_ET3, 10)
 
 #despues de sacar los genes hub tomando en cuenta las distintas medidas de centralidad hay que comparar entre redes las diferencias que se ven
 #intentando encontrar hubs consevados, hubs perdidos y hubs nuevos (que dependiendo cuales sean las condiciones puede asociarse a inflamación)
-#pueden comparar haciendo tablas o heatmaps
+#Comparar haciendo matrices o heatmaps
 
 #Para poder trabajar con los hubs, trabajare solo los hubs por grado en
 #las bacterias ya que vi que arriba ordenaron segun el valor del degree, asi que por
@@ -675,7 +675,7 @@ library(igraph)
 # Función auxiliar: tamaño relativo del componente gigante (la que nos dio el profe)
 tamano_gigante <- function(g) {
   comp <- components(g)
-  max(comp$csize) / vcount(g)
+  max(comp$csize)
 }
 cat("Componente gigante (original):", tamano_gigante(g), "\n")
 
@@ -693,6 +693,7 @@ simular_fallos <- function(g, fraccion_eliminar = 0.5, semilla = 42) {
     eliminados = 0:n_eliminar,
     fraccion_eliminada = (0:n_eliminar) / n_original,
     comp_gigante = numeric(n_eliminar + 1),
+    coeficiente_S = numeric(n_eliminar + 1),
     dist_media = numeric(n_eliminar + 1),
     diametro = numeric(n_eliminar + 1)
   )
@@ -705,6 +706,7 @@ simular_fallos <- function(g, fraccion_eliminar = 0.5, semilla = 42) {
     }
     
     resultados$comp_gigante[i + 1] <- tamano_gigante(g_temp)
+    resultados$coeficiente_S[i + 1] <- resultados$comp_gigante[i + 1] / vcount(g_temp)
     
     # Calcular distancia media solo en el componente gigante
     comp <- components(g_temp)
@@ -732,3 +734,35 @@ fallo_hlean <- simular_fallos(
 View(fallo_hlean)
 
 #Josue, puedes hacer un ciclo for para aplicarlos a todas las redes 
+
+ataque_aleatorios<- list() ##para ello genero una lista vacia en la cual se vayan a guardar los resultados de la simulación de fallos
+
+for(i in 1:length(redes_filtradas)){#hacer que la iteración vaya por toda la longitud del objeto que contiene todas las redes filtradas
+  nombre<- nombres_redes[i] #generar un objeto con los nombres de cada una de las redes (por cada ciclo va siendo un nombre diferente)
+  g<- redes_filtradas[[nombre]]#otro objeto en el cual contenga la red especifica que indica el objeto antes creado (el de nombres)
+  resultado<-simular_fallos(g, fraccion_eliminar = 0.5) #hacer fallos aleatorios para la red indicada
+  ataque_aleatorios[[nombre]]<- resultado #los resultados se guardan en la lista
+}#generar un ciclo for en el cual se use la función "simular_fallos" para cada red
+View(ataque_aleatorios[["i_lean"]]) #observar como se ve una red con los resultados
+
+#posteriormente para la intepretación se debe visualizar en una gráfica haciendo uso de ggplot y dplyr
+
+library(dplyr)
+
+df_robustez <- data.frame() #para eso debo generar un data frame vacío en donde pondre los valores de las columnas "fraccion_eliminadas" y "coeficiente_S", de cada red
+for(i in 1:length(ataque_aleatorios)){
+  df_tem<- ataque_aleatorios[[i]] #extraer de información de la red correspondiente de la lista de robustez
+  df_tem<- df_tem[, c("fraccion_eliminada","coeficiente_S")]#quedarse solo con columnas importantes para hacer el plot
+  df_tem$red <- names(ataque_aleatorios)[i] #agregar nombre de red usando los nombres correspondientes que viene en la lista que hicimos de robustez
+  df_robustez <- rbind(df_robustez,df_tem)
+}
+View(df_robustez)
+
+#ya podemos hacer la gráfica
+library(ggplot2)
+df_plot <- df_robustez[df_robustez$red %in% c("h_lean","h_obese","i_lean","i_obese"),]
+ggplot(df_plot,aes(x = fraccion_eliminada, y = coeficiente_S, color = red)) +
+  geom_line(linewidth = 1) +
+  theme_minimal()
+
+#ahora hacer ataques dirigidos porque esto puede desorganizar o descomponer más la redes biológicas
