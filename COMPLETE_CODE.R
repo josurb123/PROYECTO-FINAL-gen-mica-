@@ -667,4 +667,68 @@ pheatmap(
 
 
 
+###Robustez 
 
+#Componente gigante
+library(igraph)
+
+# Función auxiliar: tamaño relativo del componente gigante (la que nos dio el profe)
+tamano_gigante <- function(g) {
+  comp <- components(g)
+  max(comp$csize) / vcount(g)
+}
+cat("Componente gigante (original):", tamano_gigante(g), "\n")
+
+#(puse tal cual la funcion del profe)
+simular_fallos <- function(g, fraccion_eliminar = 0.5, semilla = 42) {
+  set.seed(semilla)
+  n_original <- vcount(g)
+  n_eliminar <- floor(n_original * fraccion_eliminar)
+  
+  # Seleccionar nodos a eliminar en orden aleatorio
+  orden_eliminacion <- sample(V(g)$name, n_eliminar)
+  
+  # Registrar métricas en cada paso
+  resultados <- data.frame(
+    eliminados = 0:n_eliminar,
+    fraccion_eliminada = (0:n_eliminar) / n_original,
+    comp_gigante = numeric(n_eliminar + 1),
+    dist_media = numeric(n_eliminar + 1),
+    diametro = numeric(n_eliminar + 1)
+  )
+  
+  g_temp <- g
+  
+  for (i in 0:n_eliminar) {
+    if (i > 0) {
+      g_temp <- delete_vertices(g_temp, orden_eliminacion[i])
+    }
+    
+    resultados$comp_gigante[i + 1] <- tamano_gigante(g_temp)
+    
+    # Calcular distancia media solo en el componente gigante
+    comp <- components(g_temp)
+    giant_id <- which.max(comp$csize)
+    giant_nodes <- which(comp$membership == giant_id)
+    if (length(giant_nodes) > 1) {
+      g_giant <- induced_subgraph(g_temp, giant_nodes)
+      resultados$dist_media[i + 1] <- mean_distance(g_giant)
+      resultados$diametro[i + 1] <- diameter(g_giant)
+    } else {
+      resultados$dist_media[i + 1] <- 0
+      resultados$diametro[i + 1] <- 0
+    }
+  }
+  
+  resultados
+}
+
+#Usar la funcion para simular fallos aleatorios (en una sola red)
+
+fallo_hlean <- simular_fallos(
+  redes_filtradas[["h_lean"]],
+  fraccion_eliminar = 0.5
+  )
+View(fallo_hlean)
+
+#Josue, puedes hacer un ciclo for para aplicarlos a todas las redes 
