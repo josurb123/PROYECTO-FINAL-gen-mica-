@@ -477,7 +477,7 @@ top_eigv_todos<- cen_todos[order(-cen_todos$Eigen_vector), ]
 hub_e_todos<-head(top_eigv_todos, 10)
 
 top_degree_hl<- cen_hl[order(-cen_hl$Degree), ]
-hub_d_hl<-head(top_degree_hl, 10)
+hub_d_h_lean<-head(top_degree_hl, 10)
 top_strength_hl<- cen_hl[order(-cen_hl$Strength), ]
 hub_s_hl<-head(top_strength_hl, 10)
 top_bet_hl <- cen_hl[order(-cen_hl$Betweennes), ]
@@ -486,7 +486,7 @@ top_eigv_hl<- cen_hl[order(-cen_hl$Eigen_vector), ]
 hub_e_hl<-head(top_eigv_hl, 10)
 
 top_degree_ho<- cen_ho[order(-cen_ho$Degree), ]
-hub_d_ho<-head(top_degree_ho, 10)
+hub_d_h_obese<-head(top_degree_ho, 10)
 top_strength_ho<- cen_ho[order(-cen_ho$Strength), ]
 hub_s_ho<-head(top_strength_ho, 10)
 top_bet_ho <- cen_ho[order(-cen_ho$Betweennes), ]
@@ -495,7 +495,7 @@ top_eigv_ho<- cen_ho[order(-cen_ho$Eigen_vector), ]
 hub_e_ho<-head(top_eigv_ho, 10)
 
 top_degree_il<- cen_il[order(-cen_il$Degree), ]
-hub_d_il<-head(top_degree_il, 10)
+hub_d_i_lean<-head(top_degree_il, 10)
 top_strength_il<- cen_il[order(-cen_il$Strength), ]
 hub_s_il<-head(top_strength_il, 10)
 top_bet_il <- cen_il[order(-cen_il$Betweennes), ]
@@ -504,7 +504,7 @@ top_eigv_il<- cen_il[order(-cen_il$Eigen_vector), ]
 hub_e_il<-head(top_eigv_il, 10)
 
 top_degree_io<- cen_io[order(-cen_io$Degree), ]
-hub_d_io<-head(top_degree_io, 10)
+hub_d_i_obese<-head(top_degree_io, 10)
 top_strength_io<- cen_io[order(-cen_io$Strength), ]
 hub_s_io<-head(top_strength_io, 10)
 top_bet_io <- cen_io[order(-cen_io$Betweennes), ]
@@ -572,6 +572,8 @@ hub_e_ET3<-head(top_eigv_ET3, 10)
 #GRUPO 1_ HEALTH & LEAN, IDB & LEAN. 
 grupo_lean_sanos<- hub_d_hl$Bacteria
 grupo_lean_enfermos<- hub_d_il$Bacteria
+
+hub_d_hl
 
 #GRUPO 1_conservados: conservados en sanos y enfermos
 print(grupo_lean_sanos[grupo_lean_sanos %in% grupo_lean_enfermos])
@@ -655,7 +657,7 @@ matriz_sanos_enfermos
 install.packages("pheatmap")
 library(pheatmap)
 
-eatmap(
+pheatmap(
   matriz_sanos_enfermos,
   color = c("green", "orange"),
   cluster_rows = FALSE,
@@ -729,7 +731,7 @@ simular_fallos <- function(g, fraccion_eliminar = 0.5, semilla = 42) {
 
 fallo_hlean <- simular_fallos(
   redes_filtradas[["h_lean"]],
-  fraccion_eliminar = 0.5
+  fraccion_eliminar = 2
   )
 View(fallo_hlean)
 
@@ -758,6 +760,7 @@ for(i in 1:length(ataque_aleatorios)){
 }
 View(df_robustez)
 
+
 #ya podemos hacer la gráfica
 library(ggplot2)
 df_plot <- df_robustez[df_robustez$red %in% c("h_lean","h_obese","i_lean","i_obese"),]
@@ -766,3 +769,14 @@ ggplot(df_plot,aes(x = fraccion_eliminada, y = coeficiente_S, color = red)) +
   theme_minimal()
 
 #ahora hacer ataques dirigidos porque esto puede desorganizar o descomponer más la redes biológicas
+#ciclo for que elimine bacterias importantes de la red, analisis de robustez 
+hub_d_hl
+retirar_fila<- function(base_datos){
+  base_datos[c(-1, -5, -8), ] #retirar filas importantes del objeto
+}
+
+ataque_dirigido_hl<- retirar_fila(hub_d_hl)
+ataque_dirigido_hl
+#------------------------------------------
+hub_d_ho
+
