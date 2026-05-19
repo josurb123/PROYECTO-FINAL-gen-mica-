@@ -412,7 +412,7 @@ calcular_centralidades <- function(g){
    Bacteria= V(g)$name,
    Degree= degree(g),
    Strength= strength(g),
-   Betweennes= betweenness(g),
+   Betweenness= betweenness(g),
    Eigen_vector = eigen_centrality(g)$vector
    
   )
@@ -420,27 +420,31 @@ calcular_centralidades <- function(g){
 
 #Probar con una red (verificar que funciona)
 
+calcular_centralidades(redes_filtradas[["todos"]])
 
-##Hacer un cilo for para todas
+##Hacer un cilo for para calcular centralidad en todas las redes 
 
 centralidades_redes <- list()
 
 for(i in 1:10){
-  nombre <- nombres_redes[i]
-  g <- redes_filtradas[[nombre]]
-  centralidades <- data.frame(
-  Bacteria = V(g)$name,
-  Degree = degree(g),
-  Strength = strength(g),
-  Betweenness = betweenness(g),
-  Eigenvector = eigen_centrality(g)$vector
-    
-  )
-  centralidades_redes[[nombre]] <- centralidades
+  nombre<- nombres_redes[i]
+  g<- redes_filtradas[[nombre]]
+  centralidades_redes[[nombre]]<- calcular_centralidades(g)
 }
 
+##Ver si si se guardaron 
+names(centralidades_redes)
+centralidades_redes
 
+#Ver la tabla ordenada por degree
 
+centralidades_todos_degree<- centralidades_redes[["todos"]]
+centralidades_todos_degree<- centralidades_todos_degree[
+  order(-centralidades_todos_degree$Degree),
+  ]
+View(centralidades_todos_degree)
+
+##Podemos hacer lo mismo para las diferentes centralidades 
 
 
 
@@ -646,14 +650,21 @@ colnames(matriz_sanos_enfermos)<- c("delgado-sano", "delgado-enfermo",
 ##VISUALIZACION DE LA MATRIZ, como ven, hay valores 0-1 que puede leer el heatmap
 matriz_sanos_enfermos
 
-heatmap(matriz_sanos_enfermos,
-        labRow = 0.2,
-        cexRow = 0.2,
-        main = "Bacterias presentes en pacientes sanos o enfermos",
-        col = c("red", "blue"))
+#Mejorar heatmap
 
-#MEJOREN EL HEATMAP Y COLOQUEN VALORES, Y TAMAÑOS MEJOR VISTOS
+install.packages("pheatmap")
+library(pheatmap)
 
-help("heatmap")
+pheatmap(
+  matriz_sanos_enfermos,
+  color = c("green", "orange"),
+  cluster_rows = FALSE,
+  cluster_cols = FALSE,
+  fontsize_row = 8,
+  fontsize_col = 10,
+  main = "Bacterias presentes en personas sanas y enfermos "
+)
+
+
 
 
