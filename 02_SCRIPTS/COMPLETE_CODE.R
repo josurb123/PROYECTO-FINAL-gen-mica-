@@ -482,17 +482,17 @@ top_strength_hl<- cen_hl[order(-cen_hl$Strength), ]
 hub_s_hl<-head(top_strength_hl, 10)
 top_bet_hl <- cen_hl[order(-cen_hl$Betweennes), ]
 hub_b_hl<-head(top_bet_hl, 10)
-top_eigv_hl<- cen_hl[order(-cen_hl$Eigen_vector), ]
-hub_e_hl<-head(top_eigv_hl, 10)
+top_eigv_h_lean<- cen_hl[order(-cen_hl$Eigen_vector), ]
+hub_e_h_lean<-head(top_eigv_h_lean, 10)
 
 top_degree_ho<- cen_ho[order(-cen_ho$Degree), ]
 hub_d_h_obese<-head(top_degree_ho, 10)
 top_strength_ho<- cen_ho[order(-cen_ho$Strength), ]
 hub_s_ho<-head(top_strength_ho, 10)
 top_bet_ho <- cen_ho[order(-cen_ho$Betweennes), ]
-hub_b_ho<-head(top_bet_ho, 10)
-top_eigv_ho<- cen_ho[order(-cen_ho$Eigen_vector), ]
-hub_e_ho<-head(top_eigv_ho, 10)
+hub_b_h_o<-head(top_bet_ho, 10)
+top_eigv_h_obese<- cen_ho[order(-cen_ho$Eigen_vector), ]
+hub_e_h_obese<-head(top_eigv_h_obese, 10)
 
 top_degree_il<- cen_il[order(-cen_il$Degree), ]
 hub_d_i_lean<-head(top_degree_il, 10)
@@ -500,8 +500,8 @@ top_strength_il<- cen_il[order(-cen_il$Strength), ]
 hub_s_il<-head(top_strength_il, 10)
 top_bet_il <- cen_il[order(-cen_il$Betweennes), ]
 hub_b_il<-head(top_bet_il, 10)
-top_eigv_il<- cen_il[order(-cen_il$Eigen_vector), ]
-hub_e_il<-head(top_eigv_il, 10)
+top_eigv_i_lean<- cen_il[order(-cen_il$Eigen_vector), ]
+hub_e_i_lean<-head(top_eigv_i_lean, 10)
 
 top_degree_io<- cen_io[order(-cen_io$Degree), ]
 hub_d_i_obese<-head(top_degree_io, 10)
@@ -509,8 +509,8 @@ top_strength_io<- cen_io[order(-cen_io$Strength), ]
 hub_s_io<-head(top_strength_io, 10)
 top_bet_io <- cen_io[order(-cen_io$Betweennes), ]
 hub_b_io<-head(top_bet_io, 10)
-top_eigv_io<- cen_io[order(-cen_io$Eigen_vector), ]
-hub_e_io<-head(top_eigv_io, 10)
+top_eigv_i_obese<- cen_io[order(-cen_io$Eigen_vector), ]
+hub_e_i_obese<-head(top_eigv_i_obese, 10)
 
 top_degree_danish<- cen_danish[order(-cen_danish$Degree), ]
 hub_d_danish<-head(top_degree_danish, 10)
@@ -570,13 +570,17 @@ hub_e_ET3<-head(top_eigv_ET3, 10)
 ##en pacientes enfermos y delgados?
 
 #GRUPO 1_ HEALTH & LEAN, IDB & LEAN. 
-grupo_lean_sanos<- hub_d_h_lean$Bacteria
-grupo_lean_enfermos<- hub_d_i_lean$Bacteria
+grupo_lean_sanos<- hub_e_h_lean$Bacteria
+grupo_lean_enfermos<- hub_e_i_lean$Bacteria
 
 hub_d_h_lean
 
 #GRUPO 1_conservados: conservados en sanos y enfermos
 print(grupo_lean_sanos[grupo_lean_sanos %in% grupo_lean_enfermos])
+#[1] "Faecalibacterium_prausnitzii_SL3_3"   "Bacteroides_sp_9_1_42FAA"            
+#[3] "Parabacteroides_distasonis_ATCC_8503" "Dorea_formicigenerans_ATCC_27755"    
+#[5] "Roseburia_intestinalis_M50_1"         "Bacteroides_vulgatus_ATCC_8482"      
+#[7] "Bacteroides_sp_4_3_47FAA"             "Coprococcus_comes_ATCC_27758" 
 
 #GRUPO 1_perdidos: No encontrados en sanos
 print(grupo_lean_sanos[!grupo_lean_sanos %in% grupo_lean_enfermos])
@@ -586,48 +590,42 @@ print(grupo_lean_enfermos[!grupo_lean_enfermos %in% grupo_lean_sanos])
 
 -----------------------------------------
 #GRUPO 2_ HEALTH & OBESE, IDB & OBESE. 
-grupo_obese_sanos<- hub_d_h_obese$Bacteria
-grupo_obese_enfermos<- hub_d_i_obese$Bacteria
+grupo_obese_sanos<- hub_e_h_obese$Bacteria
+grupo_obese_enfermos<- hub_e_i_obese$Bacteria
 
 #GRUPO 2_CONSERVADOS
 print(grupo_obese_sanos[grupo_obese_sanos %in% grupo_obese_enfermos])
-#[1] "Bacteroides_sp_9_1_42FAA"           "Dorea_formicigenerans_ATCC_27755"  
-#[3] "Clostridiales_sp_SS3_4"             "Faecalibacterium_prausnitzii_SL3_3"
+
+#[1] "Bacteroides_sp_9_1_42FAA"         "Bacteroides_vulgatus_ATCC_8482"   "Dorea_formicigenerans_ATCC_27755"
+#[4] "Roseburia_intestinalis_M50_1"     "Coprococcus_comes_ATCC_27758"     "Clostridiales_sp_SS3_4"          
+
 
 #GRUPO 2_PERDIDOS
 print(grupo_obese_sanos[!grupo_obese_sanos %in% grupo_obese_enfermos])
-#"Collinsella_aerofaciens_ATCC_25986" "Eubacterium_rectale_M104_1"        
-#[3] "Bacteroides_sp_4_3_47FAA"           "Bacteroides_sp_D1"                 
-#[5] "Bacteroides_vulgatus_ATCC_8482"     "Bacteroides_xylanisolvens_XB1A"  
+ 
 
 #GRUPO 2_EMERGENTES
 print(grupo_obese_enfermos[!grupo_obese_enfermos %in% grupo_obese_sanos])
-#[1] "Clostridium_sp_SS2_1"                  "Bacteroides_thetaiotaomicron_VPI_5482"
-#[3] "Ruminococcus_torques_L2_14"            "Bacteroides_sp_2_1_7"                 
-#[5] "Roseburia_intestinalis_M50_1"          "Coprococcus_comes_ATCC_27758"
+
 
 ------------------------------------------
   
 #GRUPO 3_POBLACIONES
-grupo_danish<- hub_d_danish$Bacteria
-grupo_spanish<- hub_d_spanish$Bacteria
+grupo_danish<- hub_e_danish$Bacteria
+grupo_spanish<- hub_e_spanish$Bacteria
 
 #GRUPO 3_conservados: conservados en ambas poblaciones
 print(grupo_danish[grupo_danish %in% grupo_spanish])
-#[1] "Roseburia_intestinalis_M50_1"         "Faecalibacterium_prausnitzii_SL3_3"  
-#[3] "Bacteroides_sp_9_1_42FAA"             "Bacteroides_vulgatus_ATCC_8482"      
-#[5] "Bacteroides_sp_2_1_7"                 "Bacteroides_sp_4_3_47FAA"            
-#[7] "Parabacteroides_distasonis_ATCC_8503"
+
 
 #GRUPO 3_nuevos: Emergentes 
 print(grupo_danish[!grupo_danish %in% grupo_spanish])
-#[1] "Eubacterium_rectale_M104_1" "Ruminococcus_sp_SR1_5"   "Ruminococcus_torques_L2_14"
 
 -------------------------------------------
 #GRUPO 4_ ETNI
-grupo_ET1<- hub_d_ET1$Bacteria
-grupo_ET2<- hub_d_ET2$Bacteria
-grupo_ET3<- hub_d_ET3$Bacteria
+grupo_ET1<- hub_e_ET1$Bacteria
+grupo_ET2<- hub_e_ET2$Bacteria
+grupo_ET3<- hub_e_ET3$Bacteria
 
 ##HAGAN ESTE ULTIMO CON 3, YO CREO QUE ESTARIA BIEN CUALES ESTAN PRESENTES EN LOS 3
 #Y CYUALES SON EXCLUSIVOS DE LA ETNIA
@@ -814,19 +812,19 @@ simular_dirigidos <- function(g, hubs){
   }
   resultados
 }
-#hacer un objeto con ataque dirigido a hubs para cada red
-dirigido_todos<-simular_dirigidos(redes_filtradas[["todos"]],hub_d_todos$Bacteria)
-dirigido_h_lean<-simular_dirigidos(redes_filtradas[["h_lean"]],hub_d_h_lean$Bacteria)
-dirigido_h_obese<-simular_dirigidos(redes_filtradas[["h_obese"]],hub_d_h_obese$Bacteria)
-dirigido_i_lean<-simular_dirigidos(redes_filtradas[["i_lean"]],hub_d_i_lean$Bacteria)
-dirigido_i_obese<-simular_dirigidos(redes_filtradas[["i_obese"]],hub_d_i_obese$Bacteria)
-dirigido_danish<-simular_dirigidos(redes_filtradas[["danish"]],hub_d_danish$Bacteria)
-dirigido_spanish<-simular_dirigidos(redes_filtradas[["spanish"]],hub_d_spanish$Bacteria)
-dirigido_ET1<-simular_dirigidos(redes_filtradas[["ET1"]],hub_d_ET1$Bacteria)
-dirigido_ET2<-simular_dirigidos(redes_filtradas[["ET2"]],hub_d_ET2$Bacteria)
-dirigido_ET3<-simular_dirigidos(redes_filtradas[["ET3"]],hub_d_ET3$Bacteria)
+#hacer un objeto con ataque dirigido a hubs  (eigenvector)
+dirigido_todos<-simular_dirigidos(redes_filtradas[["todos"]],hub_e_todos$Bacteria)
+dirigido_h_lean<-simular_dirigidos(redes_filtradas[["h_lean"]],hub_e_h_lean$Bacteria)
+dirigido_h_obese<-simular_dirigidos(redes_filtradas[["h_obese"]],hub_e_h_obese$Bacteria)
+dirigido_i_lean<-simular_dirigidos(redes_filtradas[["i_lean"]],hub_e_i_lean$Bacteria)
+dirigido_i_obese<-simular_dirigidos(redes_filtradas[["i_obese"]],hub_e_i_obese$Bacteria)
+dirigido_danish<-simular_dirigidos(redes_filtradas[["danish"]],hub_e_danish$Bacteria)
+dirigido_spanish<-simular_dirigidos(redes_filtradas[["spanish"]],hub_e_spanish$Bacteria)
+dirigido_ET1<-simular_dirigidos(redes_filtradas[["ET1"]],hub_e_ET1$Bacteria)
+dirigido_ET2<-simular_dirigidos(redes_filtradas[["ET2"]],hub_e_ET2$Bacteria)
+dirigido_ET3<-simular_dirigidos(redes_filtradas[["ET3"]],hub_e_ET3$Bacteria)
 
-View(dirigido_i_lean)
+View(dirigido_h_lean)
 ##hacer un data.frame con los objetos antes creados para después gráficar
 df_dirigidos <- rbind(
   cbind(dirigido_h_lean,red = "h_lean"),
@@ -834,10 +832,26 @@ df_dirigidos <- rbind(
   cbind(dirigido_i_lean,red = "i_lean"),
   cbind(dirigido_i_obese,red = "i_obese")
 )
+df_dirigidos_pais<-rbind(
+  cbind(dirigido_spanish,red = "spanish"),
+  cbind(dirigido_danish,red = "danish")
+)
 
+df_dirigidos_ETs<-rbind(
+  cbind(dirigido_ET1,red = "ET1"),
+  cbind(dirigido_ET2,red = "ET2"),
+  cbind(dirigido_ET3,red = "ET3")
+)
 #gráficar
 
 ggplot(df_dirigidos,aes(x = fraccion_eliminada, y = coeficiente_S, color = red)) +
+  geom_line(linewidth = 1) +
+  theme_minimal()
+
+ggplot(df_dirigidos_pais,aes(x = fraccion_eliminada, y = coeficiente_S, color = red)) +
+  geom_line(linewidth = 1) +
+  theme_minimal()
+ggplot(df_dirigidos_ETs,aes(x = fraccion_eliminada, y = coeficiente_S, color = red)) +
   geom_line(linewidth = 1) +
   theme_minimal()
 
