@@ -4,16 +4,13 @@ output: html_document
 ---
 
 #Introducción
-```{r}
+Las redes de co-ocuerrencia permiten modelar asociaciones entre microorganismos mediante redes, donde los nodos representan especies bacterianas y los aristas las realciones de co-existencia/ asociación. A partir de matrices de co-ocurrencia tomadas del estudio Levy Borestein (2013) se construyeron redes ponderadas correspondientes a diferentes condiciones fisiológicas y patológicas: Inviduos sanos y delgados, sanos y obesos, pacientes con IBD, etc. Posteriormente se aplicaron herraminetas de toerías de redes para evaluar metricas, centralidad, robuztes. 
 
-
-
-```
 
 #Cargar librerias
 ```{r}
 library(igraph)
-
+library(pheatmap)
 
 ```
 
@@ -202,7 +199,7 @@ plot(gh_lean,
      main = "Red de co-ocurrencia completa de poblaciones sanas y delgadas")
 dev.off()
 
---------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
 
 gh_obese<- graph_from_adjacency_matrix(
   mh_obese,
@@ -241,7 +238,7 @@ plot(gi_lean,
      main = "Red de co-ocurrencia completa de poblaciones enfermas y delgadas")
 dev.off()
 
---------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
 
 gi_obese<- graph_from_adjacency_matrix(
   mi_obese,
@@ -280,7 +277,7 @@ plot(g_danish,
      main = "Red de co-ocurrencia completa de poblaciones danescas")
 dev.off()
 
---------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
 
 g_spanish<- graph_from_adjacency_matrix(
   m_spanish,
@@ -319,7 +316,7 @@ plot(g_ET1,
      main = "Red de co-ocurrencia completa de enterotipo ET1")
 dev.off()
 
---------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
 
 g_ET2<- graph_from_adjacency_matrix(
   m_ET2,
@@ -338,7 +335,7 @@ plot(g_ET2,
      main = "Red de co-ocurrencia completa de enterotipo ET2")
 dev.off()
 
---------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
 
 g_ET3<- graph_from_adjacency_matrix(
   m_ET3,
@@ -781,7 +778,7 @@ print(grupo_obese_enfermos[!grupo_obese_enfermos %in% grupo_obese_sanos])
 #[3] "Ruminococcus_torques_L2_14"            "Bacteroides_sp_2_1_7"                 
 #[5] "Roseburia_intestinalis_M50_1"          "Coprococcus_comes_ATCC_27758"
 
-------------------------------------------
+#------------------------------------------
   
 #GRUPO 3_POBLACIONES
 grupo_danish<- hub_d_danish$Bacteria
