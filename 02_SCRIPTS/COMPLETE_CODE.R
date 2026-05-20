@@ -2,7 +2,7 @@
 #AQUI SE VA A HACER TODO EL CÓDIGO EL CUAL SE VA A PONER EN EL R MARKDOWN
 #Importar matrices a objetos de database de R
 
-todos<-read.csv("RAW DATA/B-Co-Occurrence All.csv")
+todos<-read.csv("01_RAW_DATA/occurrence_all.csv")
 View(todos)
 row.names(todos)<-todos[,1]
 todos<-todos[,-1]
@@ -13,63 +13,63 @@ todos<-todos[-1,]
 #tambien estan clasificados, asi que siento que genera mucha confusion
 #poner matriz_a-j (por ejemplo h_lean "healthy & lean")
 
-h_lean<-read.csv("RAW DATA/C- Co-Occurrence Healthy & Lean.csv")
+h_lean<-read.csv("01_RAW_DATA/occurrence_healthy_lean.csv")
 View(h_lean)
 row.names(h_lean)<-h_lean[,1]
 h_lean<-h_lean[,-1]
 colnames(h_lean)<-h_lean[1,]
 h_lean<-h_lean[-1,]
 
-h_obese<-read.csv("RAW DATA/D-Co-Occurrence Healthy & Obese.csv")
+h_obese<-read.csv("01_RAW_DATA/occurrence_healthy_obese.csv")
 View(h_obese)
 row.names(h_obese)<-h_obese[,1]
 h_obese<-h_obese[,-1]
 colnames(h_obese)<-h_obese[1,]
 h_obese<-h_obese[-1,]
 
-i_lean<-read.csv("RAW DATA/E-Co-Occurrence IBD & Lean.csv")
+i_lean<-read.csv("01_RAW_DATA/occurrence_IBD_lean.csv")
 View(i_lean)
 row.names(i_lean)<-i_lean[,1]
 i_lean<-i_lean[,-1]
 colnames(i_lean)<-i_lean[1,]
 i_lean<-i_lean[-1,]
 
-i_obese<-read.csv("RAW DATA/F-Co-Occurrence IBD & Obese.csv")
+i_obese<-read.csv("01_RAW_DATA/occurrence_IBD_obese.csv")
 View(i_obese)
 row.names(i_obese)<-i_obese[,1]
 i_obese<-i_obese[,-1]
 colnames(i_obese)<-i_obese[1,]
 i_obese<-i_obese[-1,]
 
-danish<-read.csv("RAW DATA/G-Co-Occurrence Danish.csv")
+danish<-read.csv("01_RAW_DATA/occurrence_danish.csv")
 View(danish)
 row.names(danish)<-danish[,1]
 danish<-danish[,-1]
 colnames(danish)<-danish[1,]
 danish<-danish[-1,]
 
-spanish<-read.csv("RAW DATA/H-Co-Occurrence Spanish.csv")
+spanish<-read.csv("01_RAW_DATA/occurrence_spanish.csv")
 View(spanish)
 row.names(spanish)<-spanish[,1]
 spanish<-spanish[,-1]
 colnames(spanish)<-spanish[1,]
 spanish<-spanish[-1,]
 
-ET1<-read.csv("RAW DATA/I-Co-Occurrence ET1.csv")
+ET1<-read.csv("01_RAW_DATA/occurrence_ET1.csv")
 View(ET1)
 row.names(ET1)<-ET1[,1]
 ET1<-ET1[,-1]
 colnames(ET1)<-ET1[1,]
 ET1<-ET1[-1,]
 
-ET2<-read.csv("RAW DATA/K-Co-Occurrence ET2.csv")
+ET2<-read.csv("01_RAW_DATA/occurrence_ET2.csv")
 View(ET2)
 row.names(ET2)<-ET2[,1]
 ET2<-ET2[,-1]
 colnames(ET2)<-ET2[1,]
 ET2<-ET2[-1,]
 
-ET3<-read.csv("RAW DATA/L-Co-Occurrence ET3.csv")
+ET3<-read.csv("01_RAW_DATA/occurrence_ET3.csv")
 View(ET3)
 row.names(ET3)<-ET3[,1]
 ET3<-ET3[,-1]
@@ -757,8 +757,12 @@ for(i in 1:length(ataque_aleatorios)){
   df_tem<- df_tem[, c("fraccion_eliminada","coeficiente_S")]#quedarse solo con columnas importantes para hacer el plot
   df_tem$red <- names(ataque_aleatorios)[i] #agregar nombre de red usando los nombres correspondientes que viene en la lista que hicimos de robustez
   df_robustez <- rbind(df_robustez,df_tem)
+  
+  pdf("03_RESULTS/03_analisis_robustez/df_robustez.pdf")
+  dev.off()
 }
 View(df_robustez)
+
 
 
 #ya podemos hacer la gráfica
