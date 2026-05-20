@@ -570,10 +570,10 @@ hub_e_ET3<-head(top_eigv_ET3, 10)
 ##en pacientes enfermos y delgados?
 
 #GRUPO 1_ HEALTH & LEAN, IDB & LEAN. 
-grupo_lean_sanos<- hub_d_hl$Bacteria
-grupo_lean_enfermos<- hub_d_il$Bacteria
+grupo_lean_sanos<- hub_d_h_lean$Bacteria
+grupo_lean_enfermos<- hub_d_i_lean$Bacteria
 
-hub_d_hl
+hub_d_h_lean
 
 #GRUPO 1_conservados: conservados en sanos y enfermos
 print(grupo_lean_sanos[grupo_lean_sanos %in% grupo_lean_enfermos])
@@ -586,8 +586,8 @@ print(grupo_lean_enfermos[!grupo_lean_enfermos %in% grupo_lean_sanos])
 
 -----------------------------------------
 #GRUPO 2_ HEALTH & OBESE, IDB & OBESE. 
-grupo_obese_sanos<- hub_d_ho$Bacteria
-grupo_obese_enfermos<- hub_d_io$Bacteria
+grupo_obese_sanos<- hub_d_h_obese$Bacteria
+grupo_obese_enfermos<- hub_d_i_obese$Bacteria
 
 #GRUPO 2_CONSERVADOS
 print(grupo_obese_sanos[grupo_obese_sanos %in% grupo_obese_enfermos])
@@ -769,14 +769,71 @@ ggplot(df_plot,aes(x = fraccion_eliminada, y = coeficiente_S, color = red)) +
   theme_minimal()
 
 #ahora hacer ataques dirigidos porque esto puede desorganizar o descomponer más la redes biológicas
-#ciclo for que elimine bacterias importantes de la red, analisis de robustez 
-hub_d_hl
-retirar_fila<- function(base_datos){
-  base_datos[c(-1, -5, -8), ] #retirar filas importantes del objeto
+#modificar un poco la la función simulación de fallos, para que en vez de hacer ataque aleatorios se hagan ataque a los genes hub de cada red
+simular_dirigidos <- function(g, hubs){
+  n_original <- vcount(g)#numero original de nodos
+  n_eliminar <- length(hubs)#cantidad de hubs a eliminar (usando el objeto de hubs por degree antes generado)
+  #crear dataframe de resultados
+  resultados <- data.frame(
+    eliminados = 0:n_eliminar,
+    fraccion_eliminada = (0:n_eliminar) / n_original,
+    comp_gigante = numeric(n_eliminar + 1),
+    coeficiente_S = numeric(n_eliminar + 1),
+    dist_media = numeric(n_eliminar + 1),
+    diametro = numeric(n_eliminar + 1)
+  )
+  
+  g_temp <- g #copiar red temporal
+  
+  #ciclo for para eliminar uno por uno los hub
+  for(i in 0:n_eliminar){
+    if(i > 0){#eliminar hub correspondiente
+      g_temp <- delete_vertices(g_temp,hubs[i])#que elimine cada hub correspondiente segun el ciclo en el cual este por ejemplo: si esta en el ciclo 1 quitaria el hub uno, si esta en el ciclo 2 quitaria el hub 1 y 2, y sigue el ciclo
 }
+    #componente gigante
+    resultados$comp_gigante[i + 1] <-tamano_gigante(g_temp)
+    #coeficiente S
+    resultados$coeficiente_S[i + 1] <-resultados$comp_gigante[i + 1]/ vcount(g_temp)
+    #analizar componente gigante
+    comp <- components(g_temp)
+    giant_id <- which.max(comp$csize)
+    giant_nodes <- which(comp$membership == giant_id)
+    
+    #calcular métricas
+    if(length(giant_nodes) > 1){
+      g_giant <- induced_subgraph(g_temp,giant_nodes)
+      resultados$dist_media[i + 1] <-mean_distance(g_giant)
+      resultados$diametro[i + 1] <-diameter(g_giant)
+      } else {resultados$dist_media[i + 1] <- 0
+      resultados$diametro[i + 1] <- 0
+    }
+  }
+  resultados
+}
+#hacer un objeto con ataque dirigido a hubs para cada red
+dirigido_todos<-simular_dirigidos(redes_filtradas[["todos"]],hub_d_todos$Bacteria)
+dirigido_h_lean<-simular_dirigidos(redes_filtradas[["h_lean"]],hub_d_h_lean$Bacteria)
+dirigido_h_obese<-simular_dirigidos(redes_filtradas[["h_obese"]],hub_d_h_obese$Bacteria)
+dirigido_i_lean<-simular_dirigidos(redes_filtradas[["i_lean"]],hub_d_i_lean$Bacteria)
+dirigido_i_obese<-simular_dirigidos(redes_filtradas[["i_obese"]],hub_d_i_obese$Bacteria)
+dirigido_danish<-simular_dirigidos(redes_filtradas[["danish"]],hub_d_danish$Bacteria)
+dirigido_spanish<-simular_dirigidos(redes_filtradas[["spanish"]],hub_d_spanish$Bacteria)
+dirigido_ET1<-simular_dirigidos(redes_filtradas[["ET1"]],hub_d_ET1$Bacteria)
+dirigido_ET2<-simular_dirigidos(redes_filtradas[["ET2"]],hub_d_ET2$Bacteria)
+dirigido_ET3<-simular_dirigidos(redes_filtradas[["ET3"]],hub_d_ET3$Bacteria)
 
-ataque_dirigido_hl<- retirar_fila(hub_d_hl)
-ataque_dirigido_hl
-#------------------------------------------
-hub_d_ho
+View(dirigido_i_lean)
+##hacer un data.frame con los objetos antes creados para después gráficar
+df_dirigidos <- rbind(
+  cbind(dirigido_h_lean,red = "h_lean"),
+  cbind(dirigido_h_obese,red = "h_obese"),
+  cbind(dirigido_i_lean,red = "i_lean"),
+  cbind(dirigido_i_obese,red = "i_obese")
+)
+
+#gráficar
+
+ggplot(df_dirigidos,aes(x = fraccion_eliminada, y = coeficiente_S, color = red)) +
+  geom_line(linewidth = 1) +
+  theme_minimal()
 
