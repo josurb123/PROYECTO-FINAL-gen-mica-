@@ -789,7 +789,7 @@ simular_dirigidos <- function(g, hubs){
   for(i in 0:n_eliminar){
     if(i > 0){#eliminar hub correspondiente
       g_temp <- delete_vertices(g_temp,hubs[i])#que elimine cada hub correspondiente segun el ciclo en el cual este por ejemplo: si esta en el ciclo 1 quitaria el hub uno, si esta en el ciclo 2 quitaria el hub 1 y 2, y sigue el ciclo
-}
+    }
     #componente gigante
     resultados$comp_gigante[i + 1] <-tamano_gigante(g_temp)
     #coeficiente S
@@ -804,8 +804,8 @@ simular_dirigidos <- function(g, hubs){
       g_giant <- induced_subgraph(g_temp,giant_nodes)
       resultados$dist_media[i + 1] <-mean_distance(g_giant)
       resultados$diametro[i + 1] <-diameter(g_giant)
-      } else {resultados$dist_media[i + 1] <- 0
-      resultados$diametro[i + 1] <- 0
+    } else {resultados$dist_media[i + 1] <- 0
+    resultados$diametro[i + 1] <- 0
     }
   }
   resultados
@@ -836,4 +836,5 @@ df_dirigidos <- rbind(
 ggplot(df_dirigidos,aes(x = fraccion_eliminada, y = coeficiente_S, color = red)) +
   geom_line(linewidth = 1) +
   theme_minimal()
+
 
