@@ -3,3 +3,182 @@ title: "Proyecto"
 output: html_document
 ---
 
+#Introducción
+```{r}
+
+
+
+```
+
+#Cargar librerias
+```{r}
+library(igraph)
+
+
+```
+
+#Importación y limpieza de datos 
+En esta sección se importan las matrices de co-ocurrencia que corresponden a las diferentes condiciones fisiológicas y patológicas del microbioma intestinal. Las tablas fueron transformadas a matrices numéricas. (valores con NA fueron reemplados por 0, debido a que representan ausencia de similitud) 
+```{r}
+#Importar 
+
+#TODAS
+todos<-read.csv("RAW DATA/B-Co-Occurrence All.csv")
+View(todos)
+row.names(todos)<-todos[,1]
+todos<-todos[,-1]
+colnames(todos)<-todos[1,]
+todos<-todos[-1,]
+
+#Sanos y delgados 
+h_lean<-read.csv("RAW DATA/C- Co-Occurrence Healthy & Lean.csv")
+View(h_lean)
+row.names(h_lean)<-h_lean[,1]
+h_lean<-h_lean[,-1]
+colnames(h_lean)<-h_lean[1,]
+h_lean<-h_lean[-1,]
+
+#Sanos y obesos
+h_obese<-read.csv("RAW DATA/D-Co-Occurrence Healthy & Obese.csv")
+View(h_obese)
+row.names(h_obese)<-h_obese[,1]
+h_obese<-h_obese[,-1]
+colnames(h_obese)<-h_obese[1,]
+h_obese<-h_obese[-1,]
+
+#IBD Delgadas
+i_lean<-read.csv("RAW DATA/E-Co-Occurrence IBD & Lean.csv")
+View(i_lean)
+row.names(i_lean)<-i_lean[,1]
+i_lean<-i_lean[,-1]
+colnames(i_lean)<-i_lean[1,]
+i_lean<-i_lean[-1,]
+
+#IBD obesas
+i_obese<-read.csv("RAW DATA/F-Co-Occurrence IBD & Obese.csv")
+View(i_obese)
+row.names(i_obese)<-i_obese[,1]
+i_obese<-i_obese[,-1]
+colnames(i_obese)<-i_obese[1,]
+i_obese<-i_obese[-1,]
+
+#Población Dansesa
+danish<-read.csv("RAW DATA/G-Co-Occurrence Danish.csv")
+View(danish)
+row.names(danish)<-danish[,1]
+danish<-danish[,-1]
+colnames(danish)<-danish[1,]
+danish<-danish[-1,]
+
+#Población Española
+spanish<-read.csv("RAW DATA/H-Co-Occurrence Spanish.csv")
+View(spanish)
+row.names(spanish)<-spanish[,1]
+spanish<-spanish[,-1]
+colnames(spanish)<-spanish[1,]
+spanish<-spanish[-1,]
+
+#Enterotipos
+ET1<-read.csv("RAW DATA/I-Co-Occurrence ET1.csv")
+View(ET1)
+row.names(ET1)<-ET1[,1]
+ET1<-ET1[,-1]
+colnames(ET1)<-ET1[1,]
+ET1<-ET1[-1,]
+
+ET2<-read.csv("RAW DATA/K-Co-Occurrence ET2.csv")
+View(ET2)
+row.names(ET2)<-ET2[,1]
+ET2<-ET2[,-1]
+colnames(ET2)<-ET2[1,]
+ET2<-ET2[-1,]
+
+ET3<-read.csv("RAW DATA/L-Co-Occurrence ET3.csv")
+View(ET3)
+row.names(ET3)<-ET3[,1]
+ET3<-ET3[,-1]
+colnames(ET3)<-ET3[1,]
+ET3<-ET3[-1,]
+
+# Conversión a valores numericos
+todos[] <- lapply(todos, as.numeric)
+h_lean[] <- lapply(h_lean, as.numeric)
+h_obese[] <- lapply(h_obese, as.numeric)
+i_lean[] <- lapply(i_lean, as.numeric)
+i_obese[] <- lapply(i_obese, as.numeric)
+danish[] <- lapply(danish, as.numeric)
+spanish[] <- lapply(spanish, as.numeric)
+ET1[] <- lapply(ET1, as.numeric)
+ET2[] <- lapply(ET2, as.numeric)
+ET3[] <- lapply(ET3, as.numeric)
+
+#volver todos los dataframes en matrices
+m_todos<-as.matrix(todos)
+mh_lean<-as.matrix(h_lean)
+mh_obese<-as.matrix(h_obese)
+mi_lean<-as.matrix(i_lean)
+mi_obese<-as.matrix(i_obese)
+m_danish<-as.matrix(danish)
+m_spanish<-as.matrix(spanish)
+m_ET1<-as.matrix(ET1)
+m_ET2<-as.matrix(ET2)
+m_ET3<-as.matrix(ET3)
+
+#Verificar que sean valores numéricos en la matriz
+class(m_todos)
+mode(m_todos)
+
+#observar NA's hay y sustituirlas por 0. (son matrices de similitud)
+sum(is.na(m_todos))
+sum(is.na(mh_lean))
+sum(is.na(mh_obese))
+sum(is.na(mi_lean))
+sum(is.na(mi_obese))
+sum(is.na(m_danish))
+sum(is.na(m_spanish))
+sum(is.na(m_ET1))
+sum(is.na(m_ET2))
+sum(is.na(m_ET3))
+
+m_todos[is.na(m_todos)] <- 0
+mh_lean[is.na(mh_lean)] <- 0
+mh_obese[is.na(mh_obese)] <- 0
+mi_lean[is.na(mi_lean)] <- 0
+mi_obese[is.na(mi_obese)] <- 0
+m_danish[is.na(m_danish)] <- 0
+m_spanish[is.na(m_spanish)] <- 0
+m_ET1[is.na(m_ET1)] <- 0
+m_ET2[is.na(m_ET2)] <- 0
+m_ET3[is.na(m_ET3)] <- 0
+
+
+#Matriz de todos tiene 2 filas extra vacias. Borrarlas
+
+dim(m_todos)
+rownames(m_todos)
+colnames(m_todos)
+
+m_todos <- m_todos[-c(155,156), ]
+
+```
+
+#Construcción de redes
+
+
+#Aplicación de threshold 
+
+#Eliminación de nodos aislados 
+
+#Metricas globales
+
+#Centralidades y hubs 
+
+#Comparación de hubs entre condiciones 
+
+#Heatmap
+
+#Robustez de redes 
+
+#Discusión
+
+#Conclusiones 
